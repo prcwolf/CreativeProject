@@ -13,13 +13,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/seekBarColorError" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarPixelSize"
             android:longClickable="false" android:max="254" android:layout_alignRight="@+id/seekBarPixelSize"/>
-    <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="132dp"
-            android:id="@+id/frameLayout"
-            android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/buttonNxtConnect"
-            android:layout_alignParentTop="true">
-    </FrameLayout>
     <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,4 +41,10 @@
             android:text="Сообщение"
             android:id="@+id/button" android:layout_gravity="center"
             android:layout_above="@+id/editTextNxtAddress" android:layout_centerHorizontal="true"/>
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" android:layout_above="@+id/buttonNxtConnect"
+            android:id="@+id/cameraLayout">
+    </RelativeLayout>
 </RelativeLayout>

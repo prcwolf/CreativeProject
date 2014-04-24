@@ -2,6 +2,7 @@ package com.example.CameraTest;
 
 import static com.example.CameraTest.MyActivity.*;
 
+import android.hardware.Camera;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.lib.CameraPreviewCvCallback;
