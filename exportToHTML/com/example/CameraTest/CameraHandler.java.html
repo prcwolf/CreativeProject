@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>CameraHandler.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+CameraHandler.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.example.CameraTest; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.CameraTest.MyActivity.*; 
+ 
+</span><span class="s0">import </span><span class="s1">android.view.MotionEvent; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">com.example.lib.CameraPreviewCvCallback; 
+</span><span class="s0">import </span><span class="s1">com.googlecode.javacv.cpp.opencv_core; 
+ 
+</span><span class="s0">import </span><span class="s1">java.nio.ByteBuffer; 
+ 
+</span><span class="s0">public class </span><span class="s1">CameraHandler </span><span class="s0">implements </span><span class="s1">CameraPreviewCvCallback, View.OnTouchListener { 
+    </span><span class="s0">long </span><span class="s1">processTime; 
+    </span><span class="s0">byte</span><span class="s1">[] pixelsArray; 
+    </span><span class="s0">int </span><span class="s1">w, h, step, ccnt; 
+    </span><span class="s0">int </span><span class="s1">colorError; 
+ 
+    </span><span class="s0">int </span><span class="s1">pixelCount; 
+ 
+    </span><span class="s0">private boolean </span><span class="s1">colorIsIdeal(</span><span class="s0">int </span><span class="s1">colorR, </span><span class="s0">int </span><span class="s1">colorG, </span><span class="s0">int </span><span class="s1">colorB, </span><span class="s0">int </span><span class="s1">idealR, </span><span class="s0">int </span><span class="s1">idealG, </span><span class="s0">int </span><span class="s1">idealB) { 
+        </span><span class="s2">/* Старое определение. Работает быстро, но плохо. Пока что единственный вариант */</span><span class="s1"> 
+        colorR /= colorError; idealR /= colorError; 
+        colorG /= colorError; idealG /= colorError; 
+        colorB /= colorError; idealB /= colorError; 
+ 
+        </span><span class="s0">return </span><span class="s1">colorR == idealR &amp;&amp; colorG == idealG &amp;&amp; colorB == idealB; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onPreviewFrame(opencv_core.IplImage argbImage) { 
+        </span><span class="s0">long </span><span class="s1">startTime = System.currentTimeMillis(); 
+        ByteBuffer pixels = argbImage.getByteBuffer(); 
+        pixelsArray = </span><span class="s0">new byte</span><span class="s1">[pixels.limit()]; 
+        pixels.get(pixelsArray); 
+ 
+        step = argbImage.widthStep(); 
+        ccnt = argbImage.nChannels(); 
+ 
+        colorError = colorErrorSeekBar.getProgress() + </span><span class="s3">1</span><span class="s1">; 
+        pixelSize = pixelSizeSeekBar.getProgress() + </span><span class="s3">1</span><span class="s1">; 
+        </span><span class="s0">int </span><span class="s1">color = colorSeekBar.getProgress(); 
+        foundR = ((color &amp; </span><span class="s3">8</span><span class="s1">) * </span><span class="s3">0x7f</span><span class="s1">) | ((color &amp; </span><span class="s3">1</span><span class="s1">) * </span><span class="s3">0x80</span><span class="s1">); 
+        foundG = ((color &amp; </span><span class="s3">4</span><span class="s1">) * </span><span class="s3">0x7f</span><span class="s1">) | ((color &amp; </span><span class="s3">1</span><span class="s1">) * </span><span class="s3">0x80</span><span class="s1">); 
+        foundB = ((color &amp; </span><span class="s3">2</span><span class="s1">) * </span><span class="s3">0x7f</span><span class="s1">) | ((color &amp; </span><span class="s3">1</span><span class="s1">) * </span><span class="s3">0x80</span><span class="s1">); 
+ 
+        w = StrictMath.min(argbImage.width(), screenWidth); 
+        h = StrictMath.min(argbImage.height(), screenHeight); 
+ 
+        pixelCount = </span><span class="s3">0</span><span class="s1">; 
+ 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">x = </span><span class="s3">0</span><span class="s1">; pixelSize * x &lt; w; x++) 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">y = </span><span class="s3">0</span><span class="s1">; pixelSize * y &lt; h; y++) { 
+            </span><span class="s0">int </span><span class="s1">squareNumber = pixelSize * (y * step + x * ccnt); 
+            </span><span class="s0">int </span><span class="s1">r = pixelsArray[squareNumber + </span><span class="s3">0</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+            </span><span class="s0">int </span><span class="s1">g = pixelsArray[squareNumber + </span><span class="s3">1</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+            </span><span class="s0">int </span><span class="s1">b = pixelsArray[squareNumber + </span><span class="s3">2</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+ 
+            </span><span class="s0">if </span><span class="s1">(colorIsIdeal(r, g, b, idealR, idealG, idealB)) { 
+                foundColor[x][y] = </span><span class="s0">true</span><span class="s1">; 
+ 
+</span><span class="s2">//                middleX += pixelSize * x;</span><span class="s1"> 
+</span><span class="s2">//                middleY += pixelSize * y;</span><span class="s1"> 
+</span><span class="s2">//                pixelCount++;</span><span class="s1"> 
+            } </span><span class="s0">else </span><span class="s1">{ 
+                foundColor[x][y] = </span><span class="s0">false</span><span class="s1">; 
+            } 
+        } 
+ 
+        circleColor = </span><span class="s3">0x00000000</span><span class="s1">; 
+ 
+        </span><span class="s0">if </span><span class="s1">(</span><span class="s2">/*pixelCount != 0*/ </span><span class="s0">true</span><span class="s1">) { 
+            </span><span class="s0">int </span><span class="s1">ss = (pixelSizeSeekBar.getMax() + </span><span class="s3">1</span><span class="s1">) / pixelSize, plusPlus = </span><span class="s3">0</span><span class="s1">; 
+ 
+</span><span class="s2">//            middleX /= pixelCount;</span><span class="s1"> 
+</span><span class="s2">//            middleY /= pixelCount;</span><span class="s1"> 
+ 
+            </span><span class="s0">int </span><span class="s1">minX = StrictMath.max(</span><span class="s3">0</span><span class="s1">, w / </span><span class="s3">2 </span><span class="s1">/ pixelSize - ss / </span><span class="s3">2</span><span class="s1">); 
+            </span><span class="s0">int </span><span class="s1">minY = StrictMath.max(</span><span class="s3">0</span><span class="s1">, h / </span><span class="s3">2 </span><span class="s1">/ pixelSize - ss / </span><span class="s3">2</span><span class="s1">); 
+            </span><span class="s0">int </span><span class="s1">maxX = StrictMath.min(w - </span><span class="s3">1</span><span class="s1">, minX + ss); 
+            </span><span class="s0">int </span><span class="s1">maxY = StrictMath.min(h - </span><span class="s3">1</span><span class="s1">, minY + ss); 
+ 
+            ss = (maxX - minX) * (maxY - minY); 
+ 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">x = minX; x &lt;= maxX; x++) 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">y = minY; y &lt;= maxY; y++) 
+                </span><span class="s0">if </span><span class="s1">(foundColor[x][y]) plusPlus++; 
+ 
+            foundSquare = plusPlus &gt;= ss * </span><span class="s3">3 </span><span class="s1">/ </span><span class="s3">4</span><span class="s1">; 
+            circleColor = </span><span class="s3">0xff000000 </span><span class="s1">| ((~foundR &amp; </span><span class="s3">0xff</span><span class="s1">) &lt;&lt; </span><span class="s3">020</span><span class="s1">) | ((~foundG &amp; </span><span class="s3">0xff</span><span class="s1">) &lt;&lt; </span><span class="s3">010</span><span class="s1">) | (~foundB &amp; </span><span class="s3">0xff</span><span class="s1">); 
+        } 
+ 
+        processTime = System.currentTimeMillis() - startTime; 
+        cameraPreview.invalidate(); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public boolean </span><span class="s1">onTouch(View view, MotionEvent motionEvent) { 
+        </span><span class="s0">if </span><span class="s1">(view == cameraPreview) { 
+            </span><span class="s0">int </span><span class="s1">touchX = (</span><span class="s0">int</span><span class="s1">) motionEvent.getX(); 
+            </span><span class="s0">int </span><span class="s1">touchY = (</span><span class="s0">int</span><span class="s1">) motionEvent.getY(); 
+            </span><span class="s0">if </span><span class="s1">(view == cameraPreview &amp;&amp; touchX &lt; w &amp;&amp; touchY &lt; h &amp;&amp; touchX &gt;= </span><span class="s3">0 </span><span class="s1">&amp;&amp; touchY &gt;= </span><span class="s3">0</span><span class="s1">) { 
+                </span><span class="s0">int </span><span class="s1">squareNumber = touchX * ccnt + touchY * step; 
+                idealR = pixelsArray[squareNumber + </span><span class="s3">0</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+                idealG = pixelsArray[squareNumber + </span><span class="s3">1</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+                idealB = pixelsArray[squareNumber + </span><span class="s3">2</span><span class="s1">] &amp; </span><span class="s3">0xff</span><span class="s1">; 
+            } 
+        } 
+ 
+        </span><span class="s0">return false</span><span class="s1">; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

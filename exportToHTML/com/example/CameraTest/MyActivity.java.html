@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>MyActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MyActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.example.CameraTest; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.bluetooth.BluetoothDevice; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.Window; 
+</span><span class="s0">import </span><span class="s1">android.view.WindowManager; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.FrameLayout; 
+</span><span class="s0">import </span><span class="s1">android.widget.SeekBar; 
+</span><span class="s0">import </span><span class="s1">com.example.lib.CameraPreview; 
+</span><span class="s0">import </span><span class="s1">com.example.lib.NxtBluetoothController; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.Random; 
+ 
+</span><span class="s0">public class </span><span class="s1">MyActivity </span><span class="s0">extends </span><span class="s1">Activity { 
+    </span><span class="s0">public static </span><span class="s1">Random rand = </span><span class="s0">new </span><span class="s1">Random(); 
+ 
+    </span><span class="s0">public static boolean</span><span class="s1">[][] foundColor; 
+    </span><span class="s0">public static boolean </span><span class="s1">foundSquare; 
+    </span><span class="s0">public static int </span><span class="s1">screenWidth, screenHeight; 
+    </span><span class="s0">public static int </span><span class="s1">pixelSize, circleColor, processTime; 
+    </span><span class="s0">public static int </span><span class="s1">foundR, foundG, foundB, idealR, idealG, idealB; 
+ 
+    </span><span class="s0">public static </span><span class="s1">Button nxtConnectButton, nxtDisconnectButton, nxtTryButton; 
+    </span><span class="s0">public static </span><span class="s1">EditText nxtAddressEditText; 
+    </span><span class="s0">public static </span><span class="s1">SeekBar pixelSizeSeekBar, colorErrorSeekBar, colorSeekBar; 
+ 
+    </span><span class="s0">public static </span><span class="s1">ButtonHandler buttonHandler; 
+    </span><span class="s0">public static </span><span class="s1">CameraHandler cameraHandler; 
+    </span><span class="s0">public static </span><span class="s1">DrawHandler drawHandler; 
+ 
+    </span><span class="s0">public static </span><span class="s1">BluetoothDevice[] devices; 
+    </span><span class="s0">public static </span><span class="s1">NxtBluetoothController nxtBluetooth; 
+    </span><span class="s0">public static </span><span class="s1">CameraPreview cameraPreview; 
+ 
+    </span><span class="s2">/** 
+     * Called when the activity is first created. 
+     */</span><span class="s1"> 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        requestWindowFeature(Window.FEATURE_NO_TITLE); 
+        setContentView(R.layout.main); 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+ 
+        buttonHandler = </span><span class="s0">new </span><span class="s1">ButtonHandler(); 
+        cameraHandler = </span><span class="s0">new </span><span class="s1">CameraHandler(); 
+        drawHandler = </span><span class="s0">new </span><span class="s1">DrawHandler(); 
+ 
+        cameraPreview = </span><span class="s0">new </span><span class="s1">CameraPreview(</span><span class="s0">this</span><span class="s1">, cameraHandler, drawHandler); 
+        cameraPreview.setDisplayOrientation(</span><span class="s3">90</span><span class="s1">); 
+        FrameLayout frm = (FrameLayout) findViewById(R.id.frameLayout); 
+        frm.addView(cameraPreview); 
+ 
+        nxtBluetooth = </span><span class="s0">null</span><span class="s1">; 
+ 
+        screenWidth = getResources().getDisplayMetrics().widthPixels; 
+        screenHeight = getResources().getDisplayMetrics().heightPixels; 
+ 
+        foundColor = </span><span class="s0">new boolean</span><span class="s1">[screenWidth][screenHeight]; 
+        nxtConnectButton    = (Button)   findViewById(R.id.buttonNxtConnect); 
+        nxtDisconnectButton = (Button)   findViewById(R.id.buttonNxtDisconnect); 
+        nxtTryButton        = (Button)   findViewById(R.id.button); 
+        nxtAddressEditText  = (EditText) findViewById(R.id.editTextNxtAddress); 
+        pixelSizeSeekBar    = (SeekBar)  findViewById(R.id.seekBarPixelSize); 
+        colorErrorSeekBar   = (SeekBar)  findViewById(R.id.seekBarColorError); 
+        colorSeekBar        = (SeekBar)  findViewById(R.id.seekBarColor); 
+ 
+        nxtConnectButton.setOnClickListener(buttonHandler); 
+        nxtDisconnectButton.setOnClickListener(buttonHandler); 
+        nxtTryButton.setOnClickListener(buttonHandler); 
+        cameraPreview.setOnTouchListener(cameraHandler); 
+    } 
+}</span></pre>
+</body>
+</html>

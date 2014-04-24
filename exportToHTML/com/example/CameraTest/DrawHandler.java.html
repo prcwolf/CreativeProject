@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>DrawHandler.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(0,0,255); }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+DrawHandler.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.example.CameraTest; 
+ 
+</span><span class="s0">import static </span><span class="s1">com.example.CameraTest.MyActivity.*; 
+ 
+</span><span class="s0">import </span><span class="s1">android.graphics.Canvas; 
+</span><span class="s0">import </span><span class="s1">android.graphics.Paint; 
+</span><span class="s0">import </span><span class="s1">com.example.lib.DrawCallback; 
+ 
+</span><span class="s0">public class </span><span class="s1">DrawHandler </span><span class="s0">implements </span><span class="s1">DrawCallback { 
+    </span><span class="s0">public static final int </span><span class="s1">CIRCLE_SIZE = </span><span class="s2">25</span><span class="s1">; 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onDraw(Canvas canvas) { 
+        Paint paint = </span><span class="s0">new </span><span class="s1">Paint(); 
+        </span><span class="s0">if </span><span class="s1">(pixelSize == </span><span class="s2">0</span><span class="s1">) pixelSize = </span><span class="s2">1</span><span class="s1">; 
+        </span><span class="s0">int </span><span class="s1">w = StrictMath.min(cameraPreview.getWidth(), screenWidth);   w -= w % pixelSize; 
+        </span><span class="s0">int </span><span class="s1">h = StrictMath.min(cameraPreview.getHeight(), screenHeight); h -= h % pixelSize; 
+ 
+        paint.setColor(</span><span class="s2">0xff000000 </span><span class="s1">| (foundR &lt;&lt; </span><span class="s2">020</span><span class="s1">) | (foundG &lt;&lt; </span><span class="s2">010</span><span class="s1">) | foundB); 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">x = </span><span class="s2">0</span><span class="s1">; pixelSize * x &lt; w; x++) 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">y = </span><span class="s2">0</span><span class="s1">; pixelSize * y &lt; h; y++) 
+            </span><span class="s0">if </span><span class="s1">(foundColor[x][y]) 
+                canvas.drawRect(pixelSize * x, pixelSize * y, pixelSize * (x + </span><span class="s2">1</span><span class="s1">), pixelSize * (y + </span><span class="s2">1</span><span class="s1">), paint); 
+ 
+        paint.setStrokeWidth(</span><span class="s2">3</span><span class="s1">); 
+        paint.setColor(circleColor); 
+ 
+        </span><span class="s0">if </span><span class="s1">(foundSquare) 
+            canvas.drawCircle(w / </span><span class="s2">2</span><span class="s1">, h / </span><span class="s2">2</span><span class="s1">, CIRCLE_SIZE, paint); 
+        </span><span class="s0">else </span><span class="s1">{ 
+            canvas.drawLine(w / </span><span class="s2">2</span><span class="s1">, h / </span><span class="s2">2 </span><span class="s1">- CIRCLE_SIZE, w / </span><span class="s2">2</span><span class="s1">, h / </span><span class="s2">2 </span><span class="s1">+ CIRCLE_SIZE, paint); 
+            canvas.drawLine(w / </span><span class="s2">2 </span><span class="s1">- CIRCLE_SIZE, h / </span><span class="s2">2</span><span class="s1">, w / </span><span class="s2">2 </span><span class="s1">+ CIRCLE_SIZE, h / </span><span class="s2">2</span><span class="s1">, paint); 
+        } 
+ 
+        paint.setColor(</span><span class="s2">0xffff0000</span><span class="s1">); 
+        canvas.drawText(</span><span class="s3">&quot;process time is &quot; </span><span class="s1">+ processTime, </span><span class="s2">10</span><span class="s1">, </span><span class="s2">20</span><span class="s1">, paint); 
+        paint.setColor(</span><span class="s2">0xff000000 </span><span class="s1">| (idealR &lt;&lt; </span><span class="s2">020</span><span class="s1">) | (idealG &lt;&lt; </span><span class="s2">010</span><span class="s1">) | idealB); 
+        canvas.drawRect(</span><span class="s2">10</span><span class="s1">, </span><span class="s2">40</span><span class="s1">, </span><span class="s2">20</span><span class="s1">, </span><span class="s2">50</span><span class="s1">, paint); 
+        canvas.drawText(String.format(</span><span class="s3">&quot;r is %d, g is %d, b is %d&quot;</span><span class="s1">, idealR, idealG, idealB), </span><span class="s2">30</span><span class="s1">, </span><span class="s2">40</span><span class="s1">, paint); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

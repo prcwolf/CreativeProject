@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>ButtonHandler.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+ButtonHandler.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.example.CameraTest; 
+ 
+</span><span class="s0">import </span><span class="s1">android.bluetooth.BluetoothAdapter; 
+</span><span class="s0">import </span><span class="s1">android.bluetooth.BluetoothDevice; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.MotionEvent; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">com.example.lib.NxtBluetoothController; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.nio.ByteBuffer; 
+</span><span class="s0">import </span><span class="s1">java.nio.CharBuffer; 
+</span><span class="s0">import </span><span class="s1">java.util.Set; 
+ 
+</span><span class="s0">public class </span><span class="s1">ButtonHandler </span><span class="s0">implements </span><span class="s1">View.OnClickListener { 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+        </span><span class="s0">if </span><span class="s1">(view == MyActivity.nxtConnectButton) { 
+            BluetoothDevice device = </span><span class="s0">null</span><span class="s1">; 
+            Set&lt;BluetoothDevice&gt; devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices(); 
+            </span><span class="s0">for </span><span class="s1">(BluetoothDevice d: devices) 
+                </span><span class="s0">if </span><span class="s1">(d.getName().equals(MyActivity.nxtAddressEditText.getText().toString())) 
+                    device = d; 
+            NxtBluetoothController bt = </span><span class="s0">null</span><span class="s1">; 
+            </span><span class="s0">try </span><span class="s1">{ 
+                bt = MyActivity.nxtBluetooth == </span><span class="s0">null </span><span class="s1">? </span><span class="s0">new </span><span class="s1">NxtBluetoothController(device) : MyActivity.nxtBluetooth; 
+                bt.connect(); 
+                MyActivity.nxtBluetooth = bt; 
+            } </span><span class="s0">catch </span><span class="s1">(IOException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s0">try </span><span class="s1">{ 
+                String programName = </span><span class="s3">&quot;Program.rxe&quot;</span><span class="s1">; 
+                </span><span class="s0">byte </span><span class="s1">length = (</span><span class="s0">byte</span><span class="s1">) programName.length(); 
+                </span><span class="s0">byte</span><span class="s1">[] message = </span><span class="s0">new byte</span><span class="s1">[</span><span class="s4">22</span><span class="s1">]; 
+                message[</span><span class="s4">0</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x00</span><span class="s1">; 
+                message[</span><span class="s4">1</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x00</span><span class="s1">; 
+ 
+                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; length; i++) 
+                    message[</span><span class="s4">2 </span><span class="s1">+ i] = (</span><span class="s0">byte</span><span class="s1">) programName.charAt(i); 
+ 
+                bt.sendDirectCommand(message); 
+            } </span><span class="s0">catch </span><span class="s1">(IOException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+                System.exit(</span><span class="s4">1</span><span class="s1">); 
+            } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+                System.exit(</span><span class="s4">1</span><span class="s1">); 
+            } 
+        } </span><span class="s0">else if </span><span class="s1">(view == MyActivity.nxtDisconnectButton) { 
+            NxtBluetoothController bt = MyActivity.nxtBluetooth; 
+ 
+            </span><span class="s0">try </span><span class="s1">{ 
+                </span><span class="s0">byte</span><span class="s1">[] message = </span><span class="s0">new byte</span><span class="s1">[</span><span class="s4">2</span><span class="s1">]; 
+                message[</span><span class="s4">0</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x80</span><span class="s1">; 
+                message[</span><span class="s4">1</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x01</span><span class="s1">; 
+ 
+                bt.sendDirectCommand(message); 
+            } </span><span class="s0">catch </span><span class="s1">(IOException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+            } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+            } 
+ 
+            bt.disconnect(); 
+        } </span><span class="s0">else if </span><span class="s1">(view == MyActivity.nxtTryButton) { 
+            NxtBluetoothController bt = MyActivity.nxtBluetooth; 
+            </span><span class="s0">try </span><span class="s1">{ 
+                </span><span class="s0">byte</span><span class="s1">[] message = </span><span class="s0">new byte</span><span class="s1">[</span><span class="s4">20</span><span class="s1">]; 
+                message[</span><span class="s4">0</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x80</span><span class="s1">; 
+                message[</span><span class="s4">1</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x09</span><span class="s1">; 
+                message[</span><span class="s4">2</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) </span><span class="s4">0x00</span><span class="s1">; 
+ 
+                message[ </span><span class="s4">3</span><span class="s1">] = </span><span class="s4">16</span><span class="s1">; 
+ 
+                message[ </span><span class="s4">4</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[ </span><span class="s4">5</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[ </span><span class="s4">6</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[ </span><span class="s4">7</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+ 
+                message[ </span><span class="s4">8</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[ </span><span class="s4">9</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">10</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">11</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+ 
+                message[</span><span class="s4">12</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">13</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">14</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">15</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+ 
+                message[</span><span class="s4">16</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">17</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">18</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+                message[</span><span class="s4">19</span><span class="s1">] = (</span><span class="s0">byte</span><span class="s1">) MyActivity.rand.nextInt(</span><span class="s4">256</span><span class="s1">); 
+ 
+                bt.sendDirectCommand(message); 
+            } </span><span class="s0">catch </span><span class="s1">(IOException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+                System.exit(</span><span class="s4">1</span><span class="s1">); 
+            } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
+                e.printStackTrace();  </span><span class="s2">//To change body of catch statement use File | Settings | File Templates.</span><span class="s1"> 
+                System.exit(</span><span class="s4">1</span><span class="s1">); 
+            } 
+        } 
+    } 
+} 
+</span></pre>
+</body>
+</html>

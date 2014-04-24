@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:id="@+id/relativeLayout">
+    <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarPixelSize" android:layout_alignParentLeft="true" android:layout_alignParentBottom="true"
+            android:longClickable="false" android:max="49" android:layout_alignParentRight="true"/>
+    <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarColorError" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarPixelSize"
+            android:longClickable="false" android:max="254" android:layout_alignRight="@+id/seekBarPixelSize"/>
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="132dp"
+            android:id="@+id/frameLayout"
+            android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/buttonNxtConnect"
+            android:layout_alignParentTop="true">
+    </FrameLayout>
+    <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarColor" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarColorError"
+            android:max="15" android:layout_alignRight="@+id/seekBarPixelSize"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="asurkis"
+            android:id="@+id/editTextNxtAddress" android:layout_above="@+id/seekBarColor"
+            android:layout_alignParentRight="true" android:layout_alignParentLeft="true"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Подключение"
+            android:id="@+id/buttonNxtConnect" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/editTextNxtAddress"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Отключение"
+            android:id="@+id/buttonNxtDisconnect"
+            android:layout_above="@+id/editTextNxtAddress" android:layout_alignParentRight="true"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сообщение"
+            android:id="@+id/button" android:layout_gravity="center"
+            android:layout_above="@+id/editTextNxtAddress" android:layout_centerHorizontal="true"/>
+</RelativeLayout>
