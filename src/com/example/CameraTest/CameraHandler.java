@@ -17,9 +17,6 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
 
     int pixelCount;
 
-
-
-
     private boolean colorIsIdeal(int colorR, int colorG, int colorB) {
 //        Старое определение. Работает быстро, но плохо.
 //        colorR -= colorR % colorError;
@@ -42,7 +39,6 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
                 StrictMath.abs(colorRB - idealRB) < colorError &&
                 StrictMath.abs(colorGB - idealGB) < colorError;
     }
-
 
     @Override
     public void onPreviewFrame(opencv_core.IplImage argbImage) {
