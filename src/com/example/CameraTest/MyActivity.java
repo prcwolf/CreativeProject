@@ -5,10 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.SeekBar;
+import android.widget.*;
 import com.example.lib.CameraPreview;
 import com.example.lib.NxtBluetoothController;
 
@@ -51,8 +48,8 @@ public class MyActivity extends Activity {
 
         cameraPreview = new CameraPreview(this, cameraHandler, drawHandler);
         cameraPreview.setDisplayOrientation(90);
-        FrameLayout frm = (FrameLayout) findViewById(R.id.frameLayout);
-        frm.addView(cameraPreview);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.cameraLayout);
+        layout.addView(cameraPreview);
 
         nxtBluetooth = null;
 
