@@ -16,11 +16,11 @@ public class DrawHandler implements DrawCallback {
         int w = StrictMath.min(cameraPreview.getWidth(), screenWidth);   w -= w % pixelSize;
         int h = StrictMath.min(cameraPreview.getHeight(), screenHeight); h -= h % pixelSize;
 
-//        paint.setColor(0xff000000 | (foundR << 020) | (foundG << 010) | foundB);
-//        for (int x = 0; pixelSize * x < w; x++)
-//        for (int y = 0; pixelSize * y < h; y++)
-//            if (foundColor[x][y])
-//                canvas.drawRect(pixelSize * x, pixelSize * y, pixelSize * (x + 1), pixelSize * (y + 1), paint);
+        paint.setColor(0xff000000 | (foundR << 020) | (foundG << 010) | foundB);
+        for (int x = 0; pixelSize * x < w; x++)
+        for (int y = 0; pixelSize * y < h; y++)
+            if (foundColor[x][y])
+                canvas.drawRect(pixelSize * x, pixelSize * y, pixelSize * (x + 1), pixelSize * (y + 1), paint);
 
         paint.setStrokeWidth(3);
         paint.setColor(circleColor);

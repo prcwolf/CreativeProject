@@ -2,7 +2,6 @@ package com.example.CameraTest;
 
 import static com.example.CameraTest.MyActivity.*;
 
-import android.hardware.Camera;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.lib.CameraPreviewCvCallback;
@@ -17,6 +16,9 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
     float colorError;
 
     int pixelCount;
+
+
+
 
     private boolean colorIsIdeal(int colorR, int colorG, int colorB) {
 //        Старое определение. Работает быстро, но плохо.
@@ -40,6 +42,7 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
                 StrictMath.abs(colorRB - idealRB) < colorError &&
                 StrictMath.abs(colorGB - idealGB) < colorError;
     }
+
 
     @Override
     public void onPreviewFrame(opencv_core.IplImage argbImage) {
