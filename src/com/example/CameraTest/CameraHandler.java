@@ -17,30 +17,27 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
 
     int pixelCount;
 
+    private boolean colorIsIdeal(int colorR, int colorG, int colorB, int idealR, int idealG, int idealB) {
+//        Старое определение. Работает быстро, но плохо. Нет, все же лучше, чем новое
+        colorR /= colorError; idealR /= colorError;
+        colorG /= colorError; idealG /= colorError;
+        colorB /= colorError; idealB /= colorError;
 
-
-
-    private boolean colorIsIdeal(int colorR, int colorG, int colorB) {
-//        Старое определение. Работает быстро, но плохо.
-//        colorR -= colorR % colorError;
-//        colorG -= colorG % colorError;
-//        colorB -= colorB % colorError;
-//
-//        return (colorR == idealR - idealR % colorError) && (colorG == idealG - idealG % colorError) && (colorB == idealB - idealB % colorError);
+        return colorR == idealR && colorG == idealG && colorB == idealB;
 
 //        Новое определение. Работает хорошо, но медленно.
-        float colorRG = (float) colorR / (float) colorG;
-        float colorRB = (float) colorR / (float) colorB;
-        float colorGB = (float) colorG / (float) colorB;
-
-        float idealRG = (float) idealR / (float) idealG;
-        float idealRB = (float) idealR / (float) idealB;
-        float idealGB = (float) idealG / (float) idealB;
-
-        return
-                StrictMath.abs(colorRG - idealRG) < colorError &&
-                StrictMath.abs(colorRB - idealRB) < colorError &&
-                StrictMath.abs(colorGB - idealGB) < colorError;
+//        float colorRG = (float) colorR / (float) colorG;
+//        float colorRB = (float) colorR / (float) colorB;
+//        float colorGB = (float) colorG / (float) colorB;
+//
+//        float idealRG = (float) idealR / (float) idealG;
+//        float idealRB = (float) idealR / (float) idealB;
+//        float idealGB = (float) idealG / (float) idealB;
+//
+//        return
+//                StrictMath.abs(colorRG - idealRG) < colorError &&
+//                StrictMath.abs(colorRB - idealRB) < colorError &&
+//                StrictMath.abs(colorGB - idealGB) < colorError;
     }
 
 
@@ -73,7 +70,7 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
             int g = pixelsArray[squareNumber + 1] & 0xff;
             int b = pixelsArray[squareNumber + 2] & 0xff;
 
-            if (colorIsIdeal(r, g, b))
+            if (colorIsIdeal(r, g, b, idealR, idealG, idealB))
                 for (int x1 = 0; x1 < pixelSize && x * pixelSize + x1 < w; x1++)
                 for (int y1 = 0; y1 < pixelSize && y * pixelSize + y1 < h; y1++) {
                     squareNumber = (x * pixelSize + x1) * ccnt + (y * pixelSize + y1) * step;
