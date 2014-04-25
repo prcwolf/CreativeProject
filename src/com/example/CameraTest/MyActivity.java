@@ -2,6 +2,7 @@ package com.example.CameraTest;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,11 +15,12 @@ import java.util.Random;
 public class MyActivity extends Activity {
     public static Random rand = new Random();
 
-    public static boolean[][] foundColor;
+    public static Bitmap drawingBitmap;
     public static boolean foundSquare;
     public static int screenWidth, screenHeight;
-    public static int pixelSize, circleColor, processTime;
+    public static int pixelSize, circleColor;
     public static int foundR, foundG, foundB, idealR, idealG, idealB;
+    public static long processTime;
 
     public static Button nxtConnectButton, nxtDisconnectButton, nxtTryButton;
     public static EditText nxtAddressEditText;
@@ -56,7 +58,6 @@ public class MyActivity extends Activity {
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         screenHeight = getResources().getDisplayMetrics().heightPixels;
 
-        foundColor = new boolean[screenWidth][screenHeight];
         nxtConnectButton    = (Button)   findViewById(R.id.buttonNxtConnect);
         nxtDisconnectButton = (Button)   findViewById(R.id.buttonNxtDisconnect);
         nxtTryButton        = (Button)   findViewById(R.id.button);

@@ -2,6 +2,7 @@ package com.example.CameraTest;
 
 import static com.example.CameraTest.MyActivity.*;
 
+import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.lib.CameraPreviewCvCallback;
@@ -10,7 +11,6 @@ import com.googlecode.javacv.cpp.opencv_core;
 import java.nio.ByteBuffer;
 
 public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListener {
-    long processTime;
     byte[] pixelsArray;
     int w, h, step, ccnt;
     float colorError;
@@ -46,7 +46,7 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
 
     @Override
     public void onPreviewFrame(opencv_core.IplImage argbImage) {
-        long startTime = System.currentTimeMillis();
+        processTime = System.currentTimeMillis();
         ByteBuffer pixels = argbImage.getByteBuffer();
         pixelsArray = new byte[pixels.limit()];
         pixels.get(pixelsArray);
@@ -73,41 +73,53 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
             int g = pixelsArray[squareNumber + 1] & 0xff;
             int b = pixelsArray[squareNumber + 2] & 0xff;
 
-            if (colorIsIdeal(r, g, b)) {
-                foundColor[x][y] = true;
-
-//                middleX += pixelSize * x;
-//                middleY += pixelSize * y;
-//                pixelCount++;
-            } else {
-                foundColor[x][y] = false;
-            }
+            if (colorIsIdeal(r, g, b))
+                for (int x1 = 0; x1 < pixelSize && x * pixelSize + x1 < w; x1++)
+                for (int y1 = 0; y1 < pixelSize && y * pixelSize + y1 < h; y1++) {
+                    squareNumber = (x * pixelSize + x1) * ccnt + (y * pixelSize + y1) * step;
+                    pixelsArray[squareNumber + 0] = (byte) foundR;
+                    pixelsArray[squareNumber + 1] = (byte) foundG;
+                    pixelsArray[squareNumber + 2] = (byte) foundB;
+                }
         }
 
         circleColor = 0x00000000;
 
-        if (/*pixelCount != 0*/ true) {
-            int ss = (pixelSizeSeekBar.getMax() + 1) / pixelSize, plusPlus = 0;
+        int ss = pixelSizeSeekBar.getMax(), plusPlus = 0;
 
-//            middleX /= pixelCount;
-//            middleY /= pixelCount;
+        int minX = StrictMath.max(0, (w - ss) / 2);
+        int minY = StrictMath.max(0, (h - ss) / 2);
+        int maxX = StrictMath.min(w - 1, minX + ss);
+        int maxY = StrictMath.min(h - 1, minY + ss);
 
-            int minX = StrictMath.max(0, w / 2 / pixelSize - ss / 2);
-            int minY = StrictMath.max(0, h / 2 / pixelSize - ss / 2);
-            int maxX = StrictMath.min(w - 1, minX + ss);
-            int maxY = StrictMath.min(h - 1, minY + ss);
+        ss = (maxX - minX) * (maxY - minY);
 
-            ss = (maxX - minX) * (maxY - minY);
-
-            for (int x = minX; x <= maxX; x++)
-            for (int y = minY; y <= maxY; y++)
-                if (foundColor[x][y]) plusPlus++;
-
-            foundSquare = plusPlus >= ss * 3 / 4;
-            circleColor = 0xff000000 | ((~foundR & 0xff) << 020) | ((~foundG & 0xff) << 010) | (~foundB & 0xff);
+        for (int x = minX; x <= maxX; x++)
+        for (int y = minY; y <= maxY; y++) {
+            int squareNumber = x * ccnt + y * step;
+            if (    pixelsArray[squareNumber + 0] == foundR &&
+                    pixelsArray[squareNumber + 1] == foundG &&
+                    pixelsArray[squareNumber + 2] == foundB)
+                plusPlus++;
         }
 
-        processTime = System.currentTimeMillis() - startTime;
+        foundSquare = plusPlus >= ss * 3 / 4;
+        circleColor = 0xff000000 | ((~foundR & 0xff) << 020) | ((~foundG & 0xff) << 010) | (~foundB & 0xff);
+
+        if (drawingBitmap == null || drawingBitmap.getWidth() != w || drawingBitmap.getHeight() != h)
+            drawingBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+        int[] colors = new int[w * h];
+        for (int x = 0; x < w; x++)
+        for (int y = 0; y < h; y++) {
+            int squareNumber = x * ccnt + y * step;
+            colors[x + y * w] = 0xff000000 |
+                    ((pixelsArray[squareNumber + 0] & 0xff) << 020) |
+                    ((pixelsArray[squareNumber + 1] & 0xff) << 010) |
+                    ((pixelsArray[squareNumber + 2] & 0xff) << 000);
+        }
+        drawingBitmap.setPixels(colors, 0, w, 0, 0, w, h);
+
+        processTime = System.currentTimeMillis() - processTime;
         cameraPreview.invalidate();
     }
 
