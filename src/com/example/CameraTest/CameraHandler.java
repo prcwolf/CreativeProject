@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListener {
     byte[] pixelsArray;
     int w, h, step, ccnt;
-    float colorError;
+    int colorError;
 
     int pixelCount;
 
@@ -51,7 +51,7 @@ public class CameraHandler implements CameraPreviewCvCallback, View.OnTouchListe
         step = argbImage.widthStep();
         ccnt = argbImage.nChannels();
 
-        colorError = (float) colorErrorSeekBar.getProgress() / (float) colorErrorSeekBar.getMax();
+        colorError = colorErrorSeekBar.getProgress() + 1;
         pixelSize = pixelSizeSeekBar.getProgress() + 1;
         int color = colorSeekBar.getProgress();
         foundR = ((color & 8) * 0x7f) | ((color & 1) * 0x80);

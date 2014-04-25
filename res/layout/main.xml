@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/seekBarColorError" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarPixelSize"
-            android:longClickable="false" android:max="254" android:layout_alignRight="@+id/seekBarPixelSize"/>
+            android:longClickable="false" android:max="255" android:layout_alignRight="@+id/seekBarPixelSize"/>
     <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
