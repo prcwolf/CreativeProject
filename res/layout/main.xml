@@ -6,18 +6,20 @@
     <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBarPixelSize" android:layout_alignParentLeft="true" android:layout_alignParentBottom="true"
-            android:longClickable="false" android:max="49" android:layout_alignParentRight="true"/>
+            android:id="@+id/seekBarSquareSize" android:layout_alignParentLeft="true" android:layout_alignParentBottom="true"
+            android:longClickable="false" android:max="511" android:layout_alignParentRight="true"
+            android:focusableInTouchMode="false" android:progress="255"/>
     <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBarColorError" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarPixelSize"
-            android:longClickable="false" android:max="255" android:layout_alignRight="@+id/seekBarPixelSize"/>
+            android:id="@+id/seekBarColorError" android:layout_alignLeft="@+id/seekBarSquareSize" android:layout_above="@+id/seekBarSquareSize"
+            android:longClickable="false" android:max="255" android:layout_alignRight="@+id/seekBarSquareSize"
+            android:progress="127"/>
     <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBarColor" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/seekBarColorError"
-            android:max="15" android:layout_alignRight="@+id/seekBarPixelSize"/>
+            android:id="@+id/seekBarColor" android:layout_alignLeft="@+id/seekBarSquareSize" android:layout_above="@+id/seekBarColorError"
+            android:max="15" android:layout_alignRight="@+id/seekBarSquareSize" android:progress="7"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Подключение"
-            android:id="@+id/buttonNxtConnect" android:layout_alignLeft="@+id/seekBarPixelSize" android:layout_above="@+id/editTextNxtAddress"/>
+            android:id="@+id/buttonNxtConnect" android:layout_alignLeft="@+id/seekBarSquareSize" android:layout_above="@+id/editTextNxtAddress"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
